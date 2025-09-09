@@ -39,8 +39,8 @@ namespace FoodOdering_BE.Controllers
             {
                 UserName = model.Username,
                 Email = model.Email,
-                FullName = model.FullName // Ensure FullName is assigned
-
+                FullName = model.FullName, // Ensure FullName is assigned
+                PhoneNumber=model.PhoneNumber // Theem số điện thoại
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -70,11 +70,8 @@ namespace FoodOdering_BE.Controllers
             {
                 return BadRequest("Tài khoản không tồn tại.");
             }
-            //if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
-            //    return Unauthorized(new { Status = false, Message = "Invalid username or password" });
-            //var user = await _userManager.FindByEmailAsync("an.nguyen@example.com");
-            string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-            await _userManager.ResetPasswordAsync(user, resetToken, "Admin@123");
+            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
+                return Unauthorized(new { Status = false, Message = "Invalid username or password" });
 
             var userRoles = await _userManager.GetRolesAsync(user);
 
@@ -99,7 +96,8 @@ namespace FoodOdering_BE.Controllers
                 UserId = user.Id, // Thêm UserId ở đây
                 Username = user.UserName,
                 Message = "Logged in successfully",
-                Role = userRoles.FirstOrDefault()
+                Role = userRoles.FirstOrDefault(),
+
             });
         }
 

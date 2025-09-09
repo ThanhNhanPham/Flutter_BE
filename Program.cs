@@ -46,8 +46,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "MyAllowOrigins", policy =>
     {
-        //policy.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500")
-         policy.WithOrigins("http://localhost:55045", "http://localhost:5500")
+        policy.WithOrigins("http://localhost:5500", "http://192.168.1.228")
+        //policy.WithOrigins("http://172.20.10.2")
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials(); // SignalR cần cho phép credentials
@@ -83,6 +83,11 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
     options.AddPolicy("AdminOrUser", policy => policy.RequireRole("Admin", "User"));
 });
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5239); // 5239 là port bạn đang dùng, giữ nguyên hoặc thay nếu khác
+});
+
 
 var app = builder.Build();
 

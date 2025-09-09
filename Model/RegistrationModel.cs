@@ -17,6 +17,9 @@ namespace FoodOdering_BE.Model
 
         public string FullName { get; set; } // Add FullName
         public string? Role { get; set; } // Optional: Assign a role if needed
+        [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
+        public string PhoneNumber { get; set; }
+
     }
 
 }

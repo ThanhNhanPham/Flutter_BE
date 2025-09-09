@@ -33,8 +33,9 @@ namespace FoodOdering_BE.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var order = await _context.Orders
+                .Include(o => o.User) // 👉 Lấy thông tin người dùng
                 .Include(o => o.OrderDetails)
-                .ThenInclude(od => od.Product) // Bao gồm thông tin sản phẩm
+                    .ThenInclude(od => od.Product) // Lấy sản phẩm
                 .FirstOrDefaultAsync(o => o.OrderId == id);
 
             if (order == null)
@@ -43,14 +44,16 @@ namespace FoodOdering_BE.Controllers
             var orderOutput = new OrderOutputDto
             {
                 OrderId = order.OrderId,
+                UserId = order.UserId,
                 TotalPrice = order.TotalPrice,
                 Status = order.Status,
                 OrderTime = order.OrderTime,
+                PhoneNumber = order.User?.PhoneNumber, // ✅ Lấy SDT từ User
                 OrderDetails = order.OrderDetails.Select(od => new OrderDetailOutputDto
                 {
                     OrderDetailId = od.OrderDetailId,
                     ProductId = od.ProductId,
-                    ProductName = od.Product?.ProductName ?? "Không xác định", // Lấy tên sản phẩm từ Product
+                    ProductName = od.Product?.ProductName ?? "Không xác định",
                     Quantity = od.Quantity,
                     SubTotal = od.SubTotal
                 }).ToList()
@@ -58,7 +61,6 @@ namespace FoodOdering_BE.Controllers
 
             return Ok(orderOutput);
         }
-
 
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetOrdersByUserId(string userId)
@@ -139,6 +141,8 @@ namespace FoodOdering_BE.Controllers
                 TotalPrice = order.TotalPrice,
                 Status = order.Status,
                 OrderTime = order.OrderTime,
+                PhoneNumber=user?.PhoneNumber,
+                //PhoneNumber=order.PhoneNumber,
                 OrderDetails = orderDetails.Select(od => new OrderDetailOutputDto
                 {
                     OrderDetailId = od.OrderDetailId,

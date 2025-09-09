@@ -13,5 +13,5 @@ namespace FoodOdering_BE.Model
         public ICollection<Cart> Carts { get; set; }
     }
 
-
+    
 }
