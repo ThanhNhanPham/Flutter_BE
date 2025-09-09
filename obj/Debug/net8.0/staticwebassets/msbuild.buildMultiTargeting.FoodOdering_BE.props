@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\FoodOdering_BE.props" />
-</Project>
